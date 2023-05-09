@@ -1,0 +1,19 @@
+{
+  "Version": 1,
+  "Hash": "DgHu+68ticLLD9sfptqlxrV6IT0GpG4CEiWj2OxVFvA=",
+  "Source": "SafeZone",
+  "BasePath": "_content/SafeZone",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "SafeZone\\wwwroot",
+      "Source": "SafeZone",
+      "ContentRoot": "C:\\Users\\Mahefaniaina Ranto H\\Desktop\\Projet Finale - Safe Zone\\SafeZone\\SafeZone\\wwwroot\\",
+      "BasePath": "_content/SafeZone",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": []
+}

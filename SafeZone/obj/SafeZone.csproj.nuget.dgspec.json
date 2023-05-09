@@ -51,9 +51,35 @@
               "target": "Package",
               "version": "[11.5.2, )"
             },
+            "Google.Apis": {
+              "target": "Package",
+              "version": "[1.60.0, )"
+            },
+            "Google.Apis.Auth": {
+              "target": "Package",
+              "version": "[1.60.0, )"
+            },
+            "Google.Apis.Core": {
+              "target": "Package",
+              "version": "[1.60.0, )"
+            },
+            "Google.Apis.Gmail.v1": {
+              "target": "Package",
+              "version": "[1.60.0.3035, )"
+            },
             "Microsoft.AspNetCore.Authentication.JwtBearer": {
               "target": "Package",
               "version": "[6.0.14, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[7.0.5, )"
+            },
+            "OneOf": {
+              "target": "Package",
+              "version": "[3.0.243, )"
             },
             "Pomelo.EntityFrameworkCore.MySql": {
               "target": "Package",
