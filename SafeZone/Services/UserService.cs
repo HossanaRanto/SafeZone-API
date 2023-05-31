@@ -32,7 +32,9 @@ namespace SafeZone.Services
         }
         public string HashPassword(string password)
         {
-            string key = configuration.GetValue<string>("Key");
+            string key = configuration.GetValue<string>(
+                Variables.Key);
+
             var key_password = Encoding.UTF8.GetBytes(key);
             using (var hmac = new HMACSHA512(key_password))
             {
@@ -74,7 +76,9 @@ namespace SafeZone.Services
 
         public string GenerateToken(User user,DateTime expiredate)
         {
-            string token_key = configuration.GetValue<string>("Token");
+            string token_key = configuration.GetValue<string>(
+                Variables.Token);
+
             byte[] key = System.Text.Encoding.UTF8.GetBytes(token_key);
             var symmetric_key = new SymmetricSecurityKey(key);
             var credential = new SigningCredentials(symmetric_key, SecurityAlgorithms.HmacSha256Signature);
@@ -100,6 +104,12 @@ namespace SafeZone.Services
         public async Task<User> Get(int userid)
         {
             var user = await db.Users.FirstOrDefaultAsync(u => u.Id == userid);
+            return user;
+        }
+
+        public async Task<User> GetFromUsername(string username)
+        {
+            var user = await db.Users.FirstOrDefaultAsync(u => u.Username == username);
             return user;
         }
 
@@ -180,6 +190,63 @@ namespace SafeZone.Services
             await db.SaveChangesAsync();
 
             return true;
+        }
+
+        public async Task<string> RequestPasswordReset(User user)
+        {
+            var code = random_code.Next(100000, 999999);
+
+            var reset = new PasswordResetCode
+            {
+                User = user,
+                Code = code
+            };
+            await email.Send(
+                user.Email,
+                "Code de réinitialisation du mot de passe",
+                $"Voici votre code de réinitialisation {code}. Veuillez ne pas le partager. " +
+                $"Valide pendant 3 heures");
+
+            return "Password code sent";
+        }
+
+        public async Task<Tuple<bool,string>> ResetPassword(ResetPasswordDTO resetPassword)
+        {
+            var user = await this.GetFromUsername(resetPassword.Username);
+
+            var reset = await this.db.PasswordResetCodes.FirstOrDefaultAsync(p =>
+            p.User == user &&
+            p.Code == resetPassword.Code &&
+            p.Validity <= DateTime.Now);
+
+            if (reset == null)
+            {
+                return new Tuple<bool, string>(false, "Code invalid or outdated");
+            }
+
+            user.Password= resetPassword.Password;
+            db.SaveChanges();
+
+            return new Tuple<bool, string>(true, "Password reset");
+        }
+
+        public async Task<List<Tuple<double, User>>> GetUsersNearAPosition(string coordinates)
+        {
+            var list = Enumerable.Empty<Tuple<double,User>>().ToList();
+            var users = await this.db.Users.ToListAsync();
+            var original_coordinates = CoordinateCalculation.GetCoordinate(coordinates);
+            foreach(var user in users)
+            {
+                var position = CoordinateCalculation.GetCoordinate(user.Coordinates);
+                var distance = CoordinateCalculation.CalculateDistance(position, original_coordinates);
+
+                if (distance <= Variables.Distance)
+                {
+                    list.Add(new Tuple<double, User>(distance,user));
+                }
+            }
+
+            return list;
         }
     }
 }

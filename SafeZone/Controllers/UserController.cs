@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SafeZone.DTO;
+using SafeZone.Hubs;
 using SafeZone.Repositories;
-using SafeZone.Services;
 
 namespace SafeZone.Controllers
 {
@@ -67,6 +67,35 @@ namespace SafeZone.Controllers
                 Ok(new { Message = "Your account has been verified" }) 
                 : 
                 BadRequest(new { Error = "Code invalid. Please retry" });
+        }
+
+        [HttpPost("request_reset/{username:string}")]
+        public async Task<IActionResult> RequestReset([FromRoute] string username)
+        {
+            var user = await _user.GetFromUsername(username);
+            var result = await _user.RequestPasswordReset(user);
+
+            return Ok(new
+            {
+                Message = result
+            });
+        }
+
+        [HttpPost("reset_password")]
+        public async Task<IActionResult> Reset([FromBody] ResetPasswordDTO resetPassword)
+        {
+            var result = await _user.ResetPassword(resetPassword);
+            if (!result.Item1)
+            {
+                return BadRequest(new
+                {
+                    Error = result.Item2
+                });
+            }
+            return Ok(new
+            {
+                message = result.Item2
+            });
         }
     }
 }

@@ -13,6 +13,7 @@
         public string Phone { get; set; }
         public string Coordinates { get; set; }
         public DateTime Created_At { get; set; }=DateTime.Now;
+        public bool IsOfficer { get; set; } = false;
         public bool IsVerfied { get; set; } = false;
         public bool IsBlocked { get; set; } = false;
        
