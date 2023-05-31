@@ -8,6 +8,7 @@
         public User Publisher { get; set; }
         public DateTime Created_at { get; set; }=DateTime.Now;
         public string Coordinates { get; set; }
+        public Officer Officer { get; set; }
         public bool IsOk { get; set; } = false;
     }
 }

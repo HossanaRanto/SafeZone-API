@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 using SafeZone.Data;
 using SafeZone.DTO;
 using SafeZone.Hubs;
@@ -18,6 +19,30 @@ namespace SafeZone.Services
             this.db = db;
             this.hubContext = hubContext;
             _user = user;
+        }
+
+        public Task CloseCase(Crime crime)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<Crime> Get(int id)
+        {
+            return await this.db.Crimes
+                .Include(c => c.Officer)
+                .Include(c => c.Publisher)
+                .FirstOrDefaultAsync(c => c.Id == id);
+        }
+
+        public async Task<List<Crime>> GetCrimeForOfficer()
+        {
+            var unclosed_case = await this.db.Crimes.Where(
+                c => 
+                !db.CloseCases.Include(cl => cl.Crime).Any(cl => cl.Crime == c) &&
+                c.Officer==)
+                .ToListAsync();
+
+            return unclosed_case;
         }
 
         public async Task PostCrime(PostCrimeDTO postCrime)

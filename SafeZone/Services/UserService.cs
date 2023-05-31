@@ -23,6 +23,7 @@ namespace SafeZone.Services
         private readonly IEmailRepository email;
         static Random random_code = new Random();
 
+        public User ConnectedUser { get; set; }
 
         public UserService(DataContext db, IConfiguration configuration, IEmailRepository email)
         {
