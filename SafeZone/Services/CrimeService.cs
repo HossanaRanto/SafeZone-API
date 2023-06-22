@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using Microsoft.AspNetCore.Hosting.Server;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using SafeZone.Data;
 using SafeZone.DTO;
@@ -13,12 +14,21 @@ namespace SafeZone.Services
         private readonly DataContext db;
         private readonly IUserRepository _user;
         private readonly IHubContext<CrimeHub> hubContext;
+        private readonly IServer server;
+        private readonly IPayement payement;
 
-        public CrimeService(DataContext db, IHubContext<CrimeHub> hubContext, IUserRepository user)
+        public CrimeService(
+            DataContext db, 
+            IHubContext<CrimeHub> hubContext, 
+            IUserRepository user, 
+            IServer server, 
+            IPayement payement)
         {
             this.db = db;
             this.hubContext = hubContext;
             _user = user;
+            this.server = server;
+            this.payement = payement;
         }
 
         public Task CloseCase(Crime crime)
@@ -34,15 +44,42 @@ namespace SafeZone.Services
                 .FirstOrDefaultAsync(c => c.Id == id);
         }
 
-        public async Task<List<Crime>> GetCrimeForOfficer()
+        public async Task<List<Crime>> GetCrimeForOfficer(int? start,int? count)
         {
             var unclosed_case = await this.db.Crimes.Where(
-                c => 
+                c =>
+                !c.IsOk &&
                 !db.CloseCases.Include(cl => cl.Crime).Any(cl => cl.Crime == c) &&
-                c.Officer==)
+                c.Officer == _user.ConnectedOfficer)
                 .ToListAsync();
 
+            if(start.HasValue && count.HasValue)
+            {
+                unclosed_case = unclosed_case.Take(start.Value).Skip(count.Value).ToList();
+            }
+
             return unclosed_case;
+        }
+
+        public async Task<Tuple<bool,string>> PassOfficerValidity(Crime crime)
+        {
+            if (crime.IsOk)
+            {
+                return new Tuple<bool, string>(false, "Already validated");
+            }
+
+            var payement_id = await payement.Create(crime);
+            var checkout = new CheckoutOrderResponse
+            {
+                SessionId = payement_id,
+                Crime = crime,
+                Paid_at = DateTime.Now
+            };
+
+            db.CheckoutOrderResponses.Add(checkout);
+            db.SaveChanges();
+
+            return new Tuple<bool, string>(true, "Payement done");
         }
 
         public async Task PostCrime(PostCrimeDTO postCrime)

@@ -1,11 +1,19 @@
 {
   "Version": 1,
-  "Hash": "tpq+J9Ky3qDAVGr1JhAoSuKQe6gSriBrLHSKAslA1hU=",
+  "Hash": "Zou1wl69Vl6OeyLZbhZm0MZXiAPuPcdtjt/QPyTekAc=",
   "Source": "SafeZone",
   "BasePath": "_content/SafeZone",
   "Mode": "Default",
   "ManifestType": "Build",
   "ReferencedProjectsConfiguration": [],
-  "DiscoveryPatterns": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "SafeZone\\wwwroot",
+      "Source": "SafeZone",
+      "ContentRoot": "C:\\Users\\Ranto\\Desktop\\Projet Final\\SafeZone-API\\SafeZone\\wwwroot\\",
+      "BasePath": "_content/SafeZone",
+      "Pattern": "**"
+    }
+  ],
   "Assets": []
 }

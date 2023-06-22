@@ -12,6 +12,7 @@ namespace SafeZone.Data
         public DbSet<Officer> Officers { get; set; }
         public DbSet<Crime> Crimes { get; set; }
         public DbSet<CloseCase> CloseCases { get; set; }
+        public DbSet<CheckoutOrderResponse> CheckoutOrderResponses { get; set; }
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
             

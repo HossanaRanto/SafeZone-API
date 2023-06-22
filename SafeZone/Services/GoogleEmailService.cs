@@ -5,16 +5,25 @@ using Google.Apis.Services;
 using Google.Apis.Util.Store;
 using System.Text;
 using SafeZone.Repositories;
+using SafeZone.Data;
 
 namespace SafeZone.Services
 {
     public class GoogleEmailService:IEmailRepository
     {
+        private readonly IConfiguration configuration;
+
+        public GoogleEmailService(IConfiguration configuration)
+        {
+            this.configuration = configuration;
+        }
+
         public async Task Send(string to, string subject, string body)
         {
             UserCredential credential;
 
-            using (var stream = new FileStream("client_secrets.json", FileMode.Open, FileAccess.Read))
+            var path = configuration.GetValue<string>(Variables.CredentialPaht);
+            using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read))
             {
                 string credPath = "token.json";
                 credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(

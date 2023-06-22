@@ -24,6 +24,7 @@ namespace SafeZone.Services
         static Random random_code = new Random();
 
         public User ConnectedUser { get; set; }
+        public Officer ConnectedOfficer { get; set; }
 
         public UserService(DataContext db, IConfiguration configuration, IEmailRepository email)
         {

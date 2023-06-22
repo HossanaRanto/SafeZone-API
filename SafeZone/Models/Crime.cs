@@ -10,5 +10,6 @@
         public string Coordinates { get; set; }
         public Officer Officer { get; set; }
         public bool IsOk { get; set; } = false;
+        public int Level { get; set; }
     }
 }

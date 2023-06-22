@@ -7,7 +7,8 @@ namespace SafeZone.Repositories
     {
         Task<Crime> Get(int id);
         Task PostCrime(PostCrimeDTO postCrime);
-        Task<List<Crime>> GetCrimeForOfficer();
+        Task<List<Crime>> GetCrimeForOfficer(int? start,int? count);
         Task CloseCase(Crime crime);
+        Task<Tuple<bool, string>> PassOfficerValidity(Crime crime);
     }
 }

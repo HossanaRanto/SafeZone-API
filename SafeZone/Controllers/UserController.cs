@@ -12,12 +12,12 @@ namespace SafeZone.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserRepository _user;
-        private readonly ChatHub chat;
+        //private readonly ChatHub chat;
 
-        public UserController(IUserRepository user, ChatHub chat)
+        public UserController(IUserRepository user)
         {
             this._user = user;
-            this.chat = chat;
+            //this.chat = chat;
         }
 
         

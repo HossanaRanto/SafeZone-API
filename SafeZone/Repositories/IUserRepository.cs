@@ -7,7 +7,8 @@ namespace SafeZone.Repositories
 {
     public interface IUserRepository
     {
-        public User ConnectedUser { get; set; }
+        User ConnectedUser { get; set; }
+        Officer ConnectedOfficer { get; set; }
         string HashPassword(string password);
         string GenerateToken(User user, DateTime expiredate);
         Task<OneOf<string, Token>> GetToken(LoginDto user);
